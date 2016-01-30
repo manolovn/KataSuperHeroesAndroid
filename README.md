@@ -6,6 +6,7 @@
 - We are going to use [Dagger2][dagger2] to replace production code with [Test Doubles][testDoubles].
 - We are going to practice pair programming.
 
+
 ---
 
 ## Getting started
