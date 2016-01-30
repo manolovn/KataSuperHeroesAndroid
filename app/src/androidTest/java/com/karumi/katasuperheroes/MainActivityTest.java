@@ -25,7 +25,6 @@ import android.view.View;
 
 import com.karumi.katasuperheroes.di.MainComponent;
 import com.karumi.katasuperheroes.di.MainModule;
-import com.karumi.katasuperheroes.matchers.RecyclerViewItemsCountMatcher;
 import com.karumi.katasuperheroes.model.SuperHero;
 import com.karumi.katasuperheroes.model.SuperHeroesRepository;
 import com.karumi.katasuperheroes.recyclerview.RecyclerViewInteraction;
@@ -38,7 +37,6 @@ import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,7 +56,8 @@ import static org.mockito.Mockito.when;
 @LargeTest
 public class MainActivityTest {
 
-    public static final int SUPERHEROES_COUNT = 200;
+    private static final int SUPERHEROES_COUNT = 200;
+
     @Rule
     public DaggerMockRule<MainComponent> daggerRule =
             new DaggerMockRule<>(MainComponent.class, new MainModule()).set(
@@ -133,9 +132,14 @@ public class MainActivityTest {
                 });
     }
 
+    @Test
+    public void shouldOpenSuperHeroDetailWhenTapOnItemList() {
+
+    }
+
     private List<SuperHero> givenThereAreSomeSuperHeroes(int count) {
         List<SuperHero> superHeroes = new ArrayList<>();
-        for (int i = 0 ; i < count ; i++) {
+        for (int i = 0; i < count; i++) {
             SuperHero superHero = new SuperHero(
                     "Super perrete " + i,
                     "anyPhoto",
