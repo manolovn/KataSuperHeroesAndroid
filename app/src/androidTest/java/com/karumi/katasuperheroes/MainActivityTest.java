@@ -40,6 +40,7 @@ import it.cosenonjaviste.daggermock.DaggerMockRule;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 import static org.mockito.Mockito.when;
@@ -80,20 +81,32 @@ public class MainActivityTest {
 
     @Test
     public void shouldNotShowEmptyCaseIfThereAreSuperHeros() {
-        givenThereAreSomeSuperHeroes();
+        givenThereAreOneSuperHero();
 
         startActivity();
 
         onView(withText("¯\\_(ツ)_/¯")).check(matches(not(isDisplayed())));
     }
 
+    @Test
+    public void shouldShowOneSuperHero() {
+        givenThereAreOneSuperHero();
+
+        startActivity();
+
+        onView(withId(R.id.tv_super_hero_name)).check(matches(isDisplayed()));
+    }
+
     private void givenThereAreNoSuperHeroes() {
         when(repository.getAll()).thenReturn(Collections.<SuperHero>emptyList());
     }
 
-    private void givenThereAreSomeSuperHeroes() {
+    private void givenThereAreOneSuperHero() {
         when(repository.getAll()).thenReturn(Arrays.asList(
-                new SuperHero("Super perrete", "b", true, "adsfñaslkdfj")));
+                new SuperHero("Super perrete",
+                        "http://elhistorias.com/wp-content/uploads/2010/04/super_perrete.jpg",
+                        true,
+                        "adsfñaslkdfj")));
     }
 
     private MainActivity startActivity() {
