@@ -20,56 +20,83 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+
 import com.karumi.katasuperheroes.di.MainComponent;
 import com.karumi.katasuperheroes.di.MainModule;
 import com.karumi.katasuperheroes.model.SuperHero;
 import com.karumi.katasuperheroes.model.SuperHeroesRepository;
 import com.karumi.katasuperheroes.ui.view.MainActivity;
-import it.cosenonjaviste.daggermock.DaggerMockRule;
-import java.util.Collections;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import it.cosenonjaviste.daggermock.DaggerMockRule;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class) @LargeTest public class MainActivityTest {
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class MainActivityTest {
 
-  @Rule public DaggerMockRule<MainComponent> daggerRule =
-      new DaggerMockRule<>(MainComponent.class, new MainModule()).set(
-          new DaggerMockRule.ComponentSetter<MainComponent>() {
-            @Override public void setComponent(MainComponent component) {
-              SuperHeroesApplication app =
-                  (SuperHeroesApplication) InstrumentationRegistry.getInstrumentation()
-                      .getTargetContext()
-                      .getApplicationContext();
-              app.setComponent(component);
-            }
-          });
+    @Rule
+    public DaggerMockRule<MainComponent> daggerRule =
+            new DaggerMockRule<>(MainComponent.class, new MainModule()).set(
+                    new DaggerMockRule.ComponentSetter<MainComponent>() {
+                        @Override
+                        public void setComponent(MainComponent component) {
+                            SuperHeroesApplication app =
+                                    (SuperHeroesApplication) InstrumentationRegistry.getInstrumentation()
+                                            .getTargetContext()
+                                            .getApplicationContext();
+                            app.setComponent(component);
+                        }
+                    });
 
-  @Rule public IntentsTestRule<MainActivity> activityRule =
-      new IntentsTestRule<>(MainActivity.class, true, false);
+    @Rule
+    public IntentsTestRule<MainActivity> activityRule =
+            new IntentsTestRule<>(MainActivity.class, true, false);
 
-  @Mock SuperHeroesRepository repository;
+    @Mock
+    SuperHeroesRepository repository;
 
-  @Test public void showsEmptyCaseIfThereAreNoSuperHeroes() {
-    givenThereAreNoSuperHeroes();
+    @Test
+    public void showsEmptyCaseIfThereAreNoSuperHeroes() {
+        givenThereAreNoSuperHeroes();
 
-    startActivity();
+        startActivity();
 
-    onView(withText("¯\\_(ツ)_/¯")).check(matches(isDisplayed()));
-  }
+        onView(withText("¯\\_(ツ)_/¯")).check(matches(isDisplayed()));
+    }
 
-  private void givenThereAreNoSuperHeroes() {
-    when(repository.getAll()).thenReturn(Collections.<SuperHero>emptyList());
-  }
+    @Test
+    public void shouldNotShowEmptyCaseIfThereAreSuperHeros() {
+        givenThereAreSomeSuperHeroes();
 
-  private MainActivity startActivity() {
-    return activityRule.launchActivity(null);
-  }
+        startActivity();
+
+        onView(withText("¯\\_(ツ)_/¯")).check(matches(not(isDisplayed())));
+    }
+
+    private void givenThereAreNoSuperHeroes() {
+        when(repository.getAll()).thenReturn(Collections.<SuperHero>emptyList());
+    }
+
+    private void givenThereAreSomeSuperHeroes() {
+        when(repository.getAll()).thenReturn(Arrays.asList(
+                new SuperHero("Super perrete", "b", true, "adsfñaslkdfj")));
+    }
+
+    private MainActivity startActivity() {
+        return activityRule.launchActivity(null);
+    }
 }
